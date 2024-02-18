@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{ url_for('static',filename='js/jquery-1.9.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <style>
+  #jian {
+      position: relative;
+  }
+    </style>
+    <script>
+
+    </script>
+
+
+
+    <script type="text/javascript">
+      let flag;
+      if(window.screen.height>window.screen.width)
+      {
+          flag=0;//手机
+      }
+      else{
+          flag=1;//电脑
+      }
+      console.log(flag)
+//给图表服务的
+   let x,y,orient,mark;
+if(flag==0){
+    orient='vertical'
+    x='center'
+    y='top'
+    mark=false
+}
+else {
+    mark=true
+}
+
+//给图表服务的
+
+
+
+
+
+function echart_load(){
+
+	document.getElementById("tou").click();
+    //发起post请求
+     $.post("{{url_for('rehotMovies')}}",{'id':'5'}, function (response) {
+         //回调函数
+    let dates=[]
+    let filmnames=[]
+    let rankas=[]
+    let rankbs=[]
+    let rankcs=[]
+    let rankds=[]
+    let rankes=[]
+    for(let i=0;i<=4;i++){
+        filmnames.push(response[i].filmname)
+    }
+    for(let j=5;j<=11;j++){
+        dates.push(response[j].datedate) //该死的保留字
+        rankas.push(response[j].ranka)
+        rankbs.push(response[j].rankb)
+        rankcs.push(response[j].rankc)
+        rankds.push(response[j].rankd)
+        rankes.push(response[j].ranke)
+    }
+
+        //图表票房趋势
+    var dom = document.getElementById('kuai1');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+option = {
+     title: {
+           text: "票房：万",
+        top: 20,
+        left: 60,
+        textStyle:{
+          fontWeight:'normal',
+            fontFamily:'sans-serif',
+            fontSize:15,
+        },
+
+      },
+
+
+  xAxis: {
+    data: dates,
+  },
+
+legend: {
+    data: filmnames,
+    orient: 'vertical',
+    x:'right',
+    y:'top'
+
+  },
+
+
+
+tooltip: { trigger: 'axis' },
+  yAxis: {
+    type: "value",
+
+    axisLabel: {
+        formatter: function (value, index) {
+            if(flag==0){
+                // value大于1000时除以1000并拼接k，小于1000按原格式显示
+            if (value >= 1000) {
+                value = value / 1000 + "k";
+            } else if (value < 1000) {
+                value;
+            }
+            return value;
+            }
+            else{
+                return value;
+            }
+
+
+        },
+
+    }
+
+  },
+  series: [
+    {
+      name:filmnames[0],
+      data: rankas,
+      type: "line",
+      {#stack: "x",#}
+       smooth: true,
+
+
+
+    },
+    {
+      name:filmnames[1],
+      data: rankbs,
+      type: "line",
+      {#stack: "y",#}
+      smooth: true
+    },
+     {
+      name:filmnames[2],
+      data: rankcs,
+      type: "line",
+      {#stack: "y",#}
+      smooth: true
+    },
+    {
+      name:filmnames[3],
+      data: rankds,
+      type: "line",
+      {#stack: "y",#}
+      smooth: true
+    },
+      {
+      name:filmnames[4],
+      data: rankes,
+      type: "line",
+      {#stack: "y",#}
+      smooth: true
+    },
+  ],
+};
+
+
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+
+//图表票房趋势
+
+
+
+
+
+
+    },"json");
+
+
+
+$.post("{{url_for('respecial')}}",{'id':'7'}, function (response) {
+         //回调函数
+    let name=[]
+    let special_datas=[]
+    for(let i=0;i<response.length;i++){
+        name.push(response[i].special_columns)
+        special_datas.push(response[i].special_data)
+    }
+
+//影厅比例图表
+
+
+var dom = document.getElementById('kuai2');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+
+    x: x,
+    y: y,
+	orient: orient,
+	textStyle: {
+			  fontSize: 20,
+			    },
+
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 40,
+          fontWeight: 'bold'
+        }
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        { value: special_datas[0], name: name[0] },
+        { value: special_datas[1], name: name[1] },
+        { value: special_datas[2], name: name[2] },
+        { value: special_datas[3], name: name[3] },
+        { value: special_datas[4], name: name[4] }
+      ]
+    }
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+
+
+//影厅比例图表
+
+
+
+},"json");
+
+
+
+$.post("{{url_for('rechampion')}}",{'id':'9'}, function (response) {
+         //回调函数
+    let years=[]
+    let boxoffice=[]
+    let boxofficescale=[]
+    for(let i=0;i<response.length;i++){
+        years.push(response[i].movies_M_Year)
+        boxoffice.push(response[i].movies_BoxOffice)
+        boxofficescale.push(response[i].movies_BoxOfficePercent)
+    }
+
+//冠军票房局势图表
+
+    var dom = document.getElementById('kuai3');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+  legend: [
+  {
+
+    top: 10,
+    right: 450,
+    data: [ {name: "票房" } ]
+  },
+  {
+    top: 10,
+    right: 550,
+    data: [ {name: "票房占比"} ]
+  }
+],
+
+
+
+    grid: {
+    top: '18%',
+    left: '10%',  // grid布局设置适当调整避免X轴文字只能部分显示
+    right: '10%', // grid布局设置适当调整避免X轴文字只能部分显示
+    bottom: '15%',
+  },
+
+  xAxis: {
+    type: 'category',
+    data: years,
+
+     axisLabel: {
+        color: "#411919",
+        fontSize: 12, //字体大小
+        interval: 0, //横轴信息全部显示，必须设置
+        {#rotate: -30, //-30度角倾斜显示，根据页面布局实际可以自行调整#}
+                 formatter: function (value) {
+            if(flag==0){
+
+                    return value.split("").join("\n")
+            }
+            else{
+                return value
+            }
+        },
+      },
+  },
+  tooltip: { trigger: 'axis' },
+  yAxis : [{
+  type: 'value',
+  name:'票房（亿）',
+  min: 0,
+  max: 60,
+  interval: 10,
+  splitNumber: 6, //设置坐标轴的分割段数
+  splitLine:{//去除网格线
+			show:false
+		},
+
+},
+{
+  type: 'value',
+  name:'票房占比',
+  min: 0,
+  max: 35,
+  interval: 5,
+  splitNumber: 6, //设置坐标轴的分割段数
+  splitLine:{//去除网格线
+			show:false
+		},
+}],
+
+
+
+
+
+  series: [
+    {
+      data: boxoffice,
+      type: 'bar',
+        name:"票房",
+	  itemStyle: {
+	  	normal: {
+	  		label: {
+	  			show: true, //开启显示
+	  			position: 'top', //在上方显示
+	  			textStyle: { //数值样式
+	  				color: 'black',
+	  				fontSize: 16
+	  			}
+	  		}
+	  	}
+	  },
+    },
+      {
+      data: boxofficescale,
+      type: 'line',
+      smooth:true,
+      name:"票房占比",
+      yAxisIndex: 1,    //在单个图表实例中存在多个y轴的时候有用
+	  itemStyle: {
+	  	normal: {
+	  		label: {
+	  			show: true, //开启显示
+	  			position: 'top', //在上方显示
+	  			textStyle: { //数值样式
+	  				color: 'black',
+	  				fontSize: 16
+	  			}
+	  		}
+	  	}
+	  },
+    },
+
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+
+
+
+//冠军票房局势图表
+
+
+
+},"json");
+
+$.post("{{url_for('renewmovie')}}",{'id':'8'}, function (response) {
+         //回调函数
+    let years=[]
+    let movies_year_BoxOffices=[]
+    let movies_year_BoxOffice_Guochans=[]
+
+    let movies_year_BoxOffice_Jinkous=[]
+    let movies_year_Nums=[]
+    let movies_year_Num_Guochans=[]
+    let movies_year_Num_Jinkous=[]
+    for(let i=0;i<response.length;i++){
+        years.push(response[i].movies_year_Year)
+        movies_year_BoxOffices.push(response[i].movies_year_BoxOfficea)
+        {#console.log(response[i].movies_year_BoxOfficea)#}
+        movies_year_BoxOffice_Guochans.push(response[i].movies_year_BoxOffice_Guochan)
+
+        movies_year_BoxOffice_Jinkous.push(response[i].movies_year_BoxOffice_Jinkou)
+        movies_year_Nums.push(response[i].movies_year_Num)
+        movies_year_Num_Guochans.push(response[i].movies_year_Num_Guochan)
+        movies_year_Num_Jinkous.push(response[i].movies_year_Num_Jinkou)
+    }
+
+//新片等数据图表
+
+
+    var dom = document.getElementById('kuai4');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+  legend: [
+  {
+    top: 10,
+    left: 150,
+    data: [ {name: "总票房" } ]
+  },
+  {
+    top: 10,
+    left: 245,
+    data: [ {name: "国产票房"} ]
+  },
+  {
+    top: 10,
+    left: 350,
+    data: [ {name: "进口票房"} ]
+  },
+   {
+    top: 10,
+    right: 150,
+    data: [ {name: "新上映影片总数"} ]
+  },
+  {
+    top: 10,
+    right: 300,
+    data: [ {name: "新上映国产数"} ]
+  },
+   {
+    top: 10,
+    right: 450,
+    data: [ {name: "新上映进口数"} ]
+  },
+],
+
+
+
+    grid: {
+    top: '18%',
+    left: '10%',  // grid布局设置适当调整避免X轴文字只能部分显示
+    right: '10%', // grid布局设置适当调整避免X轴文字只能部分显示
+    bottom: '15%',
+  },
+
+  xAxis: {
+    type: 'category',
+    data: years,
+     axisLabel: {
+        color: "#411919",
+        fontSize: 10, //字体大小
+        interval: 0, //横轴信息全部显示，必须设置
+        {#rotate: -30, //-30度角倾斜显示，根据页面布局实际可以自行调整#}
+                 formatter: function (value) {
+            if(flag==0){
+
+                    return value.split("").join("\n")
+            }
+            else{
+                return value
+            }
+        },
+      },
+
+  },
+  tooltip: { trigger: 'axis' },
+  yAxis : [{
+  type: 'value',
+  name:'票房（亿）',
+  min: 0,
+  max: 1500,
+  interval: 300,
+
+
+  splitNumber: 5, //设置坐标轴的分割段数
+  splitLine:{//去除网格线
+			show:false
+		},
+
+          axisLabel: {
+          show: mark,
+
+    },
+
+
+
+},
+{
+  type: 'value',
+  name:'影片数量',
+  min: 0,
+  max: 600,
+  interval: 100,
+  splitNumber: 6, //设置坐标轴的分割段数
+  splitLine:{//去除网格线
+			show:false
+		},
+    axisLabel: {
+          show: mark,
+
+    },
+}],
+
+
+
+
+
+  series: [
+    {
+      data: movies_year_BoxOffices,
+      type: 'bar',
+
+      stack: "boxoffice",
+        name:"总票房",
+
+    },
+      {
+      data: movies_year_BoxOffice_Guochans,
+      type: 'bar',
+        name:"国产票房",
+          stack: "boxoffice",
+
+    },
+     {
+      data: movies_year_BoxOffice_Jinkous,
+      type: 'bar',
+        name:"进口票房",
+         stack: "boxoffice",
+
+    },
+
+      {
+      data: movies_year_Nums,
+      type: 'line',
+      smooth:true,
+      name:"新上映影片总数",
+      yAxisIndex: 1,    //在单个图表实例中存在多个y轴的时候有用
+
+    },
+            {
+      data: movies_year_Num_Guochans,
+      type: 'line',
+      smooth:true,
+      name:"新上映国产数",
+      yAxisIndex: 1,    //在单个图表实例中存在多个y轴的时候有用
+
+    },
+            {
+      data: movies_year_Num_Jinkous,
+      type: 'line',
+      smooth:true,
+      name:"新上映进口数",
+      yAxisIndex: 1,    //在单个图表实例中存在多个y轴的时候有用
+
+    },
+
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+
+
+
+//新片等数据图表
+
+
+
+},"json");
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+
+</head>
+<body onload="echart_load()">
+
+{% include 'head_new.html' ignore missing %}
+
+
+
+
+{#{% include 'table.html' ignore missing %}#}
+<div data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="50" id="jian">
+<nav class="navbar navbar-expand-sm bg-light text-black" style="position: fixed;">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link pe-2" href="#section1" id="tou">票房趋势</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#section2">影厅比例</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#section3">冠军趋势</a>
+    </li>
+      <li class="nav-item">
+      <a class="nav-link" href="#section4">新片趋势</a>
+    </li>
+  </ul>
+</nav>
+
+
+
+
+
+
+<div id="section1" class="container-fluid" style="padding-top:130px;padding-bottom:70px;">
+{#section1#}
+    <div class="container mt-3">
+    <div class="mt-4 pt-4 pe-0 ps-5 py-0 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">热门电影票房趋势</div>
+            <div class="col-sm-12 text-white">
+
+                    <div id="kuai1" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+{#section1#}
+</div>
+<div id="section2" class="container-fluid" style="padding-top:130px;padding-bottom:70px">
+{#section2#}
+    <div class="container mt-3">
+    <div class="mt-4 p-5 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">特效影厅占比分布</div>
+            <div class="col-sm-12 text-white">
+
+                    <div id="kuai2" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+{#section2#}
+</div>
+<div id="section3" class="container-fluid" style="padding-top:130px;padding-bottom:70px">
+{#section3#}
+
+
+
+       <div class="container mt-3">
+    <div class="mt-4 pt-4 pe-0 ps-5 py-0 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">历年冠军电影票房趋势</div>
+            <div class="col-sm-12 text-white">
+
+                    <div id="kuai3" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+{#section3#}
+</div>
+ <div id="section4" class="container-fluid" style="padding-top:130px;padding-bottom:70px">
+{#section4#}
+
+    <div class="container mt-3">
+    <div class="mt-4 p-5 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">影片年票房及新片趋势</div>
+            <div class="col-sm-12 text-white">
+
+                    <div id="kuai4" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+{#section4#}
+ </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

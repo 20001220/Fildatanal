@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>send</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script>
+
+        function sendemail() {
+                 //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('send_email')}}",frm,function (d){
+
+        {#document.getElementById("emtext").value=" ";/*清空添加框文本--innerHtml不能用作清空，value可以*/#}
+
+        alert(d.status)
+        location.reload();
+
+
+
+       },"json");
+
+
+
+
+        }
+
+    </script>
+
+</head>
+<body>
+{% include 'head_new.html' ignore missing %}
+
+
+
+
+
+<div class="container mt-3">
+  <h2 class="text-center">联系我</h2>
+  <form method="post" id="form2">
+      <label for="comment">想说的话：</label>
+      <textarea class="form-control" rows="5" id="comment" name="emtext"></textarea>
+    <input type="button" class="btn btn-primary" onclick="sendemail()" value="发送">
+  </form>
+</div>
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

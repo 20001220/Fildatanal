@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>票房</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <script>
+
+function btn() {
+         $.post("{{url_for('refshow')}}",{'id':'3'}, function (response) {
+
+
+
+     alert(response["status"])
+    search()
+
+
+})}
+
+
+
+
+function timeFormat(time) {
+      // 时间格式化 2019-09-08
+      var time= new Date(Date.parse(time));
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1 > 10 ? time.getMonth()+1 : '0'+(time.getMonth()+1);
+      let day = time.getDate() >= 10 ? time.getDate() : "0" + time.getDate();
+      let h = time.getHours()>= 10 ? time.getHours() : "0" + time.getHours();              //获取当前小时数(0-23)
+      let m = time.getMinutes()>= 10 ? time.getMinutes() : "0" + time.getMinutes();         //获取当前分钟数(0-59)
+      {#console.log(year + "-" + month + "-" + day+ " " + h+ ":" + m)#}
+      return year + "-" + month + "-" + day;
+
+    }
+
+
+
+
+
+function search(){
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('onnow_select')}}",frm,function (d){
+           var s=''
+           document.getElementById("gai").value="";
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+f.movies_rank+'</td>'
+               s+='<td>'+f.movies_MovieName+'</td>'
+               s+='<td>'+f.movies_BoxOffice+'</td>'
+               s+='<td>'+timeFormat(f.movies_ReleaseDate)+'</td>'
+               s+='<td>'+f.movies_TotalBoxOffice+'</td>'
+               s+='<td>'+f.movies_ShowCount+'</td>'
+               s+='<td>'+f.movies_AudienceCount+'</td>'
+               s+='<td>'+f.movies_BoxOfficePercent+'</td>'
+               s+='<td>'+f.movies_TaoPiaoPiaoWantToSee+'</td>'
+               s+='<td>'+f.movies_MaoYanWantToSee+'</td>'
+               s+='<td>'+f.movies_DouBanWantToSee+'</td>'
+               s+='<td>'+f.movies_HjBoxOffice+'</td>'
+               s+='<td>'+f.movies_HjShowCount+'</td>'
+               s+='<td>'+f.movies_HjBoxOfficePercent+'</td></tr>'
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+
+
+        }
+
+
+
+
+        function search1(){
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form3").serializeArray();
+       $.post("{{url_for('onnow_select')}}",frm,function (d){
+           var s=''
+           document.getElementById("filname").value="";
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+f.movies_rank+'</td>'
+               s+='<td>'+f.movies_MovieName+'</td>'
+               s+='<td>'+f.movies_BoxOffice+'</td>'
+               s+='<td>'+timeFormat(f.movies_ReleaseDate)+'</td>'
+               s+='<td>'+f.movies_TotalBoxOffice+'</td>'
+               s+='<td>'+f.movies_ShowCount+'</td>'
+               s+='<td>'+f.movies_AudienceCount+'</td>'
+               s+='<td>'+f.movies_BoxOfficePercent+'</td>'
+               s+='<td>'+f.movies_TaoPiaoPiaoWantToSee+'</td>'
+               s+='<td>'+f.movies_MaoYanWantToSee+'</td>'
+               s+='<td>'+f.movies_DouBanWantToSee+'</td>'
+               s+='<td>'+f.movies_HjBoxOffice+'</td>'
+               s+='<td>'+f.movies_HjShowCount+'</td>'
+               s+='<td>'+f.movies_HjBoxOfficePercent+'</td></tr>'
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+
+
+        }
+
+
+
+
+    </script>
+</head>
+<body onload='search()'>
+{% include 'head_new.html' ignore missing %}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col">
+        <h1 class="h2 text-center" style="font-family:KaiTi;">电影票房排行榜</h1>
+    </div>
+  </div>
+</div>
+
+
+<div class="container mt-3">
+
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#home">更新</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu1">查找</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">数据</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="home" class="container tab-pane active"><br>
+{#home#}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+
+
+    <div class="col-sm-3 p-3 text-white">
+        <div class="row">
+            <div class="col">
+                <button type="button" onclick='btn()' class="btn btn-info" id="update">更新数据</button>
+            </div>
+        </div>
+    </div>
+
+{#     <div class="col-sm-4 p-3 bg-primary text-white">#}
+{#            <button type="button" class="btn btn-info">菜单</button>#}
+{#     </div>#}
+
+
+
+
+  </div>
+</div>
+
+
+{#home#}
+    </div>
+
+    <div id="menu1" class="container tab-pane fade"><br>
+{#搜索#}
+
+<div class="container-fluid mt-3">
+<div class="row">
+    <div class="col">
+        <form  method="post" id="form2">
+            <div class="row">
+                <div class="col">
+                    <input class="form-control" placeholder="影名" name="movies_MovieName" id="filname">
+                </div>
+               <div class="col">
+                   <input type="button" class="btn btn-info" value="查询" onclick="search()">
+               </div>
+
+            </div>
+
+    </form>
+    </div>
+
+    <div class="col">
+        <form  method="post" id="form3">
+            <div class="row">
+                <div class="col">
+                    <input class="form-control" placeholder="排名" name="movies_rank" id="gai">
+                </div>
+               <div class="col">
+                   <input type="button" class="btn btn-info" value="查询" onclick="search1()">
+               </div>
+
+            </div>
+
+    </form>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+{#搜索#}
+    </div>
+
+    <div id="menu2" class="container tab-pane fade"><br>
+{#    menu2#}
+        <div class="row">
+           <div class="col">
+               <a href="{{url_for('bookoffice')}}"><button type="button" class="btn btn-info" id="ping">票房视图</button></a>
+               <a href="{{url_for('numbershow')}}"><button type="button" class="btn btn-info" id="typefen">场次视图</button></a>
+               <a href="{{url_for('mantime')}}"><button type="button" class="btn btn-info" id="area">人次视图</button></a>
+
+           </div>
+
+        </div>
+{#    menu2#}
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+<div class="table-responsive">
+<table class="table table-hover mx-auto w-75">
+    <tr>
+        <th>排名</th>
+        <th>影片名称</th>
+        <th>当前票房(元)</th>
+        <th>上映日期</th>
+        <th>累计票房(元)</th>
+        <th>当前场次</th>
+        <th>当前人次</th>
+        <th>票房占比</th>
+        <th>淘票票想看数</th>
+        <th>猫眼想看数</th>
+        <th>豆瓣想看数</th>
+        <th>黄金场票房</th>
+        <th>黄金场场次</th>
+        <th>黄金场票房占比</th>
+    </tr>
+    <tbody id="tbody">
+
+
+    </tbody>
+
+</table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

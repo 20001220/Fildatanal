@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>类型分布</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+    <script>
+
+
+              let flag;
+      if(window.screen.height>window.screen.width)
+      {
+          flag=0;//手机
+      }
+      else{
+          flag=1;//电脑
+      }
+      console.log(flag)
+
+
+
+        function echart(){
+
+      //发起post请求
+     $.post("{{url_for('typecount')}}",{'id':'3'}, function (response) {
+         //回调函数
+    let scores=[];
+    let count=[];
+   for(let i=0;i<response.length;i++){
+        scores.push(response[i].score)
+       count.push(response[i].count)
+    }
+
+
+
+//图表
+
+
+var dom = document.getElementById('containerone');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+  series: [
+    {
+      type: 'treemap',
+      data: [
+        {
+          name: scores[0],
+          value: count[0],
+        },
+        {
+          name: scores[1],
+          value: count[1],
+        },
+		{
+		  name: scores[2],
+		  value: count[2],
+		},
+		{
+		  name: scores[3],
+		  value: count[3],
+		},
+		{
+		  name: scores[4],
+		  value: count[4],
+		},
+		{
+		  name: scores[5],
+		  value: count[5],
+		},
+		{
+		  name: scores[6],
+		  value: count[6],
+		},
+		{
+		  name: scores[7],
+		  value: count[7],
+		},
+		{
+		  name: scores[8],
+		  value: count[8],
+		},
+		{
+		  name: scores[9],
+		  value: count[9],
+		}
+      ]
+    }
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+
+
+
+
+
+//图表
+
+
+
+     },"json");
+
+
+        }
+
+
+
+
+    </script>
+
+
+
+</head>
+<body onload='echart()'>
+{% include 'head_new.html' ignore missing %}
+
+
+<div class="container mt-3">
+    <div class="mt-4 p-2 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">主要类型分布图</div>
+            <div class="col-sm-12 text-white">
+                <input class="btn btn-info" type=button value="返回" onclick="window.history.go(-1)">
+
+                    <div id="containerone" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

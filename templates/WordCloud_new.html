@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>词云</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        #subtita{
+    font-size: 45px;
+    font-family: STKaiti;
+    color:rgb(92, 118, 141) ;
+           }
+        #subtitb{
+    font-size: 20px;
+    font-family: STKaiti;
+    color:green;
+}
+    </style>
+
+</head>
+<body>
+{#onload="fadout()"#}
+{% include 'head_new.html' ignore missing %}
+
+
+<div class="container sm-3 w-75" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+    <div class="sm-4 p-3 bg-white text-black rounded">
+
+
+  <div class="row mx-auto">
+    <div class="col-md-6 p-3 text-white">
+        <img src="static/images/tes4.png" alt="" id="wordcloud" class="img-fluid">
+    </div>
+    <div class="col-md-6 p-3 text-black">
+
+        <div id="subtita" class="text-center">词频统计</div>
+            <div id="subtitb">根据250部电影的一句话描述，通过wordcloud做出词云进行分析
+    ，让我们可以更清晰的获得这些电影的关键信息所在。</div>
+         <img src="static/images/projector.jpg" alt="" id="zhuangshi" class="img-fluid">
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

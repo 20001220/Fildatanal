@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>场次视图</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+
+    <script>
+       let flag;
+      if(window.screen.height>window.screen.width)
+      {
+          flag=0;//手机
+      }
+      else{
+          flag=1;//电脑
+      }
+      console.log(flag)
+
+
+
+        function echart(){
+
+      //发起post请求
+     $.post("{{url_for('numbershowview')}}",{'id':'13'}, function (response) {
+         //回调函数
+    let scores=[];
+    let count=[];
+   for(let i=0;i<response.length;i++){
+        scores.push(response[i].score)
+       count.push(response[i].count/10000)
+    }
+
+
+
+//图表
+
+var chartDom = document.getElementById('containerone');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+              title: {
+           text: "单位:万个",
+            x:'top',
+        textStyle:{
+          fontWeight:'normal',
+            fontFamily:'sans-serif',
+            fontSize:15,
+        },
+
+      },
+    tooltip: { trigger: 'axis' },
+  xAxis: {
+    type: 'category',
+    data: scores,
+                 axisLabel: {
+        color: "#411919",
+        fontSize: 12, //字体大小
+        interval: 0, //横轴信息全部显示，必须设置
+        {#rotate: -90, //-30度角倾斜显示，根据页面布局实际可以自行调整#}
+
+
+
+        formatter: function (value) {
+            if(flag==0){
+
+                    return value.split("").join("\n")
+            }
+            else{
+                return value
+            }
+        },
+
+
+      },
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: [
+    {
+      data: count,
+      type: 'line',
+      smooth: true
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+
+
+
+
+
+
+//图表
+
+
+
+     },"json");
+
+
+        }
+
+    </script>
+
+
+
+</head>
+<body onload='echart()'>
+{% include 'head_new.html' ignore missing %}
+
+
+<div class="container mt-3">
+    <div class="mt-4 p-2 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">场次排行（当天）</div>
+            <div class="col-sm-12 text-white">
+                <input class="btn btn-info" type=button value="返回" onclick="window.history.go(-1)">
+
+                    <div id="containerone" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

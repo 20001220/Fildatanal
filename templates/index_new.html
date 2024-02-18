@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+</head>
+<body>
+{% include 'head_new.html' ignore missing %}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col">
+        <h1 class="h1 text-center" style="font-family:KaiTi;">基于Python爬虫的电影数据分析平台</h1>
+    </div>
+  </div>
+</div>
+
+
+
+
+{#<div class="container-fluid mt-3">#}
+{#  <div class="row">#}
+{#    <div class="col">#}
+{#        <h1 class="h4 text-center text-muted">应用python爬虫、Flask、MySql、Echarts、WordCloud等技术实现</h1>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
+
+
+
+
+
+<!-- Carousel -->
+<div id="demo" class="carousel slide" data-bs-ride="carousel" style="width: 80%;margin : 0 auto;">
+
+  <!-- Indicators/dots -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+	<button type="button" data-bs-target="#demo" data-bs-slide-to="3"></button>
+	<button type="button" data-bs-target="#demo" data-bs-slide-to="4"></button>
+  </div>
+
+  <!-- The slideshow/carousel -->
+  <div class="carousel-inner">
+
+    <div class="carousel-item active">
+        <a href="{{url_for('filmrank')}}">
+       <img src="/static/images/lun1.jpg" class="d-block" style="width:100%">
+      <div class="carousel-caption">
+        <p>电影评分排行榜</p>
+      </div>
+        </a>
+    </div>
+
+    <div class="carousel-item">
+        <a href="{{url_for('wordcloud')}}">
+       <img src="/static/images/lun2.jpg" class="d-block" style="width:100%">
+      <div class="carousel-caption">
+        <p>词频统计</p>
+      </div>
+        </a>
+    </div>
+
+
+    <div class="carousel-item">
+        <a href="{{url_for('boxofficerank')}}">
+       <img src="/static/images/lun3.jpg" class="d-block" style="width:100%">
+      <div class="carousel-caption">
+
+        <p class="text-black">电影票房排行榜</p>
+      </div>
+        </a>
+
+
+    </div>
+
+
+	<div class="carousel-item">
+        <a href="{{url_for('forecast')}}">
+        <img src="/static/images/lun4.jpg" class="d-block" style="width:100%">
+	  <div class="carousel-caption">
+
+	    <p>预测未来票房排行TOP10</p>
+	  </div>
+        </a>
+	</div>
+
+
+	<div class="carousel-item">
+        <a href="{{url_for('visualizing')}}">
+      <img src="/static/images/lun5.jpg" class="d-block" style="width:100%">
+	  <div class="carousel-caption">
+
+	    <p>数据图表展示</p>
+	  </div>
+        </a>
+
+	</div>
+
+
+
+
+
+  </div>
+
+  <!-- Left and right controls/icons -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+
+
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

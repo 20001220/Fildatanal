@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>评分</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        .rocket {
+				width: 70px;
+				height: 90px;
+				background: url(/static/images/rocket.png) no-repeat center center;
+                background-size:100% 100%;
+				position: fixed;
+				right: 8px;
+				bottom: 60px;
+			}
+
+    </style>
+
+    <script>
+
+
+
+
+function btn() {
+         $.post("{{url_for('refresh')}}",{'id':'2'}, function (response) {
+
+
+
+     alert(response["status"])
+    search()
+
+
+})}
+
+
+
+
+
+function search(){
+    let p='&nbsp&nbsp'
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form3").serializeArray();
+       $.post("{{url_for('toptwo_selecto')}}",frm,function (d){
+           var s=''
+            document.getElementById("gai").value="";
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+p+f.orderin+p+'</td>'
+               s+='<td>'+f.findTitleCn+'</td>'
+               {#s+='<td>'+f.findTitleEn+'</td>'#}
+               s+='<td>'+p+f.findRating+p+'</td>'
+               s+='<td>'+f.findJudge+'</td>'
+               s+='<td>'+f.findInq+'</td></tr>'
+               {#s+='<td>'+f.findBd+'</td>#}
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+
+
+        }
+
+
+
+
+        function search2(){
+    let p='&nbsp&nbsp'
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('toptwo_selecto')}}",frm,function (d){
+           var s=''
+            document.getElementById("filname").value="";
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+p+f.orderin+p+'</td>'
+               s+='<td>'+f.findTitleCn+'</td>'
+               {#s+='<td>'+f.findTitleEn+'</td>'#}
+               s+='<td>'+p+f.findRating+p+'</td>'
+               s+='<td>'+f.findJudge+'</td>'
+               s+='<td>'+f.findInq+'</td></tr>'
+               {#s+='<td>'+f.findBd+'</td>#}
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+
+
+        }
+
+
+
+
+    </script>
+</head>
+<body onload='search()'>
+{% include 'head_new.html' ignore missing %}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col">
+        <h1 class="h2 text-center" style="font-family:KaiTi;">电影评分排行榜</h1>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="container mt-3">
+
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-bs-toggle="tab" href="#home">更新</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu1">查找</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#menu2">数据</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="home" class="container tab-pane active"><br>
+{#home#}
+
+<div class="container-fluid mt-3">
+  <div class="row">
+
+
+    <div class="col-sm-3 p-3 text-white">
+        <div class="row">
+            <div class="col">
+                <button type="button" onclick='btn()' class="btn btn-info" id="update">更新数据</button>
+            </div>
+        </div>
+    </div>
+
+{#     <div class="col-sm-4 p-3 bg-primary text-white">#}
+{#            <button type="button" class="btn btn-info">菜单</button>#}
+{#     </div>#}
+
+
+
+
+  </div>
+</div>
+
+
+{#home#}
+    </div>
+
+    <div id="menu1" class="container tab-pane fade"><br>
+{#搜索#}
+
+<div class="container-fluid mt-3">
+<div class="row">
+    <div class="col">
+        <form  method="post" id="form3">
+            <div class="row">
+                <div class="col">
+                    <input class="form-control" placeholder="影名" name="findTitleCn" id="filname">
+                </div>
+               <div class="col">
+                   <input type="button" class="btn btn-info" value="查询" onclick="search()">
+               </div>
+
+            </div>
+
+    </form>
+    </div>
+
+    <div class="col">
+        <form  method="post" id="form2">
+            <div class="row">
+                <div class="col">
+                    <input class="form-control" placeholder="概括" name="findInq" id="gai">
+                </div>
+               <div class="col">
+                   <input type="button" class="btn btn-info" value="查询" onclick="search2()">
+               </div>
+
+            </div>
+
+    </form>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+{#搜索#}
+    </div>
+
+    <div id="menu2" class="container tab-pane fade"><br>
+{#    menu2#}
+        <div class="row">
+           <div class="col">
+               <a href="{{url_for('ping')}}"><button type="button" class="btn btn-info" id="ping">评分分布</button></a>
+               <a href="{{url_for('typefen')}}"><button type="button" class="btn btn-info" id="typefen">类型分布</button></a>
+               <a href="{{url_for('area')}}"><button type="button" class="btn btn-info" id="area">地区分布</button></a>
+
+           </div>
+
+        </div>
+{#    menu2#}
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+<div class="table-responsive">
+<table class="table table-hover mx-auto w-75">
+    <tr>
+        <th>排名</th>
+        <th>影片名</th>
+{#        <th>电影外国名称</th>#}
+        <th>评分</th>
+        <th>评价人数</th>
+        <th>一句话概括</th>
+{#        <th>其他信息</th>#}
+    </tr>
+    <tbody id="tbody">
+
+
+    </tbody>
+
+</table>
+</div>
+
+
+<a href="javascript:void(0)" class="rocket"></a>
+
+
+<script type="text/javascript">
+			$(document).ready(function() {
+				// 当页面卷曲超过1000px的时候，显示小火箭
+				$(window).scroll(function() {
+					if($(this).scrollTop() > 800) {
+						$(".rocket").stop().fadeIn();
+                        //console.log('123')
+					} else {
+						$(".rocket").stop().fadeOut();
+					}
+				});
+
+				// 当小火箭被点击的时候，要返航
+				$(".rocket").on("click", function() {
+					$("html,body").stop().animate({
+						scrollTop: '0'
+					}, 1000);
+				});
+			});
+</script>
+
+
+
+
+
+
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

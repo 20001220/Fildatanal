@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>评分分布</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/scr.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+    <script>
+
+              let flag;
+      if(window.screen.height>window.screen.width)
+      {
+          flag=0;//手机
+      }
+      else{
+          flag=1;//电脑
+      }
+      console.log(flag)
+
+
+
+        function echart(){
+
+      //发起post请求
+     $.post("{{url_for('score')}}",{'id':'3'}, function (response) {
+         //回调函数
+    let scores=[];
+    let count=[];
+   for(let i=0;i<response.length;i++){
+        scores.push(response[i].score)
+       count.push(response[i].count)
+    }
+
+
+   //图表
+
+
+        var dom = document.getElementById('containerone');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+
+    var option;
+
+    option = {
+        color:['#0db6c4'],
+    grid: {
+    top: '18%',
+    left: '10%',  // grid布局设置适当调整避免X轴文字只能部分显示
+    right: '10%', // grid布局设置适当调整避免X轴文字只能部分显示
+    bottom: '15%',
+  },
+    title: {
+           text: "单位:个",
+        top: 50,
+        left: 70,
+        textStyle:{
+          fontWeight:'normal',
+            fontFamily:'sans-serif',
+            fontSize:15,
+        },
+
+      },
+
+
+
+
+  xAxis: {
+    type: 'category',
+    data: scores,
+
+     axisLabel: {
+        color: "#411919",
+        fontSize: 12, //字体大小
+        interval: 0, //横轴信息全部显示，必须设置
+        {#rotate: -90, //-30度角倾斜显示，根据页面布局实际可以自行调整#}
+
+
+
+        formatter: function (value) {
+            if(flag==0){
+
+                    return value.split("").join("\n")
+            }
+            else{
+                return value
+            }
+        },
+
+
+      },
+  },
+        tooltip: { trigger: 'axis' },
+  yAxis: {
+    type: 'value',
+      formatter:'{value} 亿',
+  },
+
+
+
+
+  series: [
+    {
+      data: count,
+      type: 'bar',
+	  itemStyle: {
+	  	normal: {
+	  		label: {
+	  			show: true, //开启显示
+	  			position: 'top', //在上方显示
+	  			textStyle: { //数值样式
+	  				color: 'black',
+	  				fontSize: 16
+	  			}
+	  		}
+	  	}
+	  },
+    },
+
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+     {#window.onresize = myChart.resize;#}
+	 {#     myChart.setOption(option);#}
+    window.addEventListener('resize', myChart.resize);
+
+
+
+    //图表
+
+
+
+     },"json");
+
+
+        }
+
+
+
+    </script>
+
+
+
+</head>
+<body onload='echart()'>
+{% include 'head_new.html' ignore missing %}
+
+
+<div class="container mt-3">
+    <div class="mt-4 p-2 text-black rounded" style="-moz-box-shadow:2px 2px 5px #424242;
+    -webkit-box-shadow:2px 2px 5px #464646;
+     box-shadow: 7px 15px 30px #b6d2d7;">
+
+          <div class="row">
+              <div class="h2 text-center" style="font-family:KaiTi;">评分分布图</div>
+            <div class="col-sm-12 text-white">
+            <input class="btn btn-info" type=button value="返回" onclick="window.history.go(-1)">
+
+                     <div id="containerone" style="height: 500px">
+
+                     </div>
+             </div>
+          </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+
+
+{% include 'footer_new.html' ignore missing %}
+</body>
+</html>

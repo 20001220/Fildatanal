@@ -1,0 +1,27 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{url_for('static',filename='../static/css/bootstrap.min.css')}}">
+<script src="{{ url_for('static',filename='js/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+
+
+<div class="fixed-bottom text-center bg-light">
+    <div class="h7" id="footer_text">
+        <a href="https://beian.miit.gov.cn/" target="_blank" class="text-muted" style="text-decoration: none;">吉ICP备2023000873号-1</a>
+        应用Python爬虫、Flask、MySql、Echarts等技术实现.<a href="{{url_for('toemail')}}" class="text-muted" style="text-decoration: none;">By LiXiang</a>
+    </div>
+
+</div>
+
+
+<script>
+      if(window.screen.height>window.screen.width)
+      {
+          $("#footer_text").css("fontSize",'8px')//手机
+      }
+      else{
+          $("#footer_text").css("fontSize",'15px')//电脑
+      }
+
+</script>
+
+
